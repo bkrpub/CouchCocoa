@@ -196,7 +196,7 @@ static inline BOOL isLocalDBName(NSString* url) {
         kStateNames = [[NSArray alloc] initWithObjects: @"", @"triggered", @"completed", @"error",
                        nil];
     NSString* stateStr = [self getValueOfProperty: @"_replication_state"];
-    NSUInteger state = stateStr ? [kStateNames indexOfObject: stateStr] : NSNotFound;
+    NSUInteger state = stateStr ? [kStateNames indexOfObject: stateStr] : (self.isNew ? kReplicationTriggered : NSNotFound);
     if (state == NSNotFound)
         state = kReplicationIdle;
     if (state != _state) {
@@ -337,6 +337,10 @@ static inline BOOL isLocalDBName(NSString* url) {
         // Update my properties, triggering KVO notifications, if the values changed:
         if (!$equal(error, _error))
             self.error = error;
+
+        NSLog(@"STATUS: %@", status);
+
+        
         if (!$equal(status, _statusString))
             [self setStatusString: status];
     } else {
